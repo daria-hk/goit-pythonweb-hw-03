@@ -39,16 +39,16 @@ class HttpHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         pr_url = urllib.parse.urlparse(self.path)
         if pr_url.path == '/':
-            self.send_html_file('index.html')
+            self.send_html_file('templates/index.html')
         elif pr_url.path == '/message':
-            self.send_html_file('message.html')
+            self.send_html_file('templates/message.html')
         elif pr_url.path == '/read':
             self.display_msg()
         else:
             if pathlib.Path().joinpath(pr_url.path[1:]).exists():
                 self.send_static()
             else:
-                self.send_html_file('error.html', 404)
+                self.send_html_file('templates/error.html', 404)
 
     def display_msg(self):
         try:
@@ -57,7 +57,7 @@ class HttpHandler(BaseHTTPRequestHandler):
         except FileNotFoundError:
             all_data = {}
 
-        with open('read.html', 'r') as f:
+        with open('templates/read.html', 'r') as f:
             rows_tmp = Template(f.read())
 
         rendered_templt = rows_tmp.render(messages=all_data)
@@ -87,7 +87,7 @@ class HttpHandler(BaseHTTPRequestHandler):
 
 
 def run(server_class=HTTPServer, handler_class=HttpHandler):
-    server_address = ('', 3000)
+    server_address = ('', 3002)
     http = server_class(server_address, handler_class)
     try:
         http.serve_forever()
